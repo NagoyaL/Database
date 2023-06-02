@@ -8,26 +8,15 @@ package proyecto_db.Modelo;
  *
  * @author gurui
  */
-public class Estudiante {
-    private long identificacion;
+public class Estudiante extends Usuario {
     private String carrera;
     private String universidad;
-    private Usuario usuario; 
+
     // Constructor
-    public Estudiante(long identificacion, String carrera, String universidad, Usuario usuario) {
-        this.identificacion = identificacion;
+    public Estudiante(int identificacion, String nombre, String direccion, String telefono, String email, String tipoUsuario, String carrera, String universidad) {
+        super(identificacion, nombre, direccion, telefono, email, tipoUsuario);
         this.carrera = carrera;
         this.universidad = universidad;
-        this.usuario = usuario;
-    }
-
-    // Getters y Setters
-    public long getIdentificacion() {
-        return identificacion;
-    }
-
-    public void setIdentificacion(long identificacion) {
-        this.identificacion = identificacion;
     }
 
     public String getCarrera() {
@@ -46,11 +35,5 @@ public class Estudiante {
         this.universidad = universidad;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
 }
