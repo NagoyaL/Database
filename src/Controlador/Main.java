@@ -10,6 +10,7 @@ package Controlador;
  */
 import java.sql.Connection;
 import accesoDatos.FachadaDB;
+import Vista.vistaLogin;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,6 +27,9 @@ public class Main {
         } else {
             System.out.println("Error al conectar a la base de datos");
         }
+
+        vistaLogin loginForm = new vistaLogin();
+        loginForm.setVisible(true);
     }
 }
 
