@@ -8,14 +8,12 @@ public class AreaConocimiento {
     private String codigo;
     private String nombre;
     private String descripcion;
-    private AreaConocimiento areaPadre; 
 
     // Constructor
     public AreaConocimiento(String codigo, String nombre, String descripcion, AreaConocimiento areaPadre) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.areaPadre = areaPadre;
     }
 
     // Getters y Setters
@@ -43,11 +41,4 @@ public class AreaConocimiento {
         this.descripcion = descripcion;
     }
 
-    public AreaConocimiento getAreaPadre() {
-        return areaPadre;
-    }
-
-    public void setAreaPadre(AreaConocimiento areaPadre) {
-        this.areaPadre = areaPadre;
-    }
 }
