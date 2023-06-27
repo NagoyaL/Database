@@ -4,10 +4,13 @@ public class Estudiante extends Usuario {
     private String carrera;
     private String universidad;
     
-    
+    public Estudiante(String identificacion) {
+        super(identificacion);
+    }
+
     // Constructor
-    public Estudiante(String identificacion, String nombre, String direccion, String telefono, String email, String carrera, String universidad) {
-        super(identificacion, nombre, direccion, telefono, email);
+    public Estudiante(String identificacion, String nombre, String apellido, String direccion, String telefono, String email, String tipo_usuario, String carrera, String universidad) {
+        super(identificacion, nombre, apellido, direccion, telefono, email, tipo_usuario);
         this.carrera = carrera;
         this.universidad = universidad;
     }

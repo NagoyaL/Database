@@ -7,11 +7,9 @@ public class FachadaDB {
         
         public FachadaDB(){
             url="jdbc:postgresql://localhost:5432/Biblioteca";
-            usuario="postgres";
-            password="123Randy";
-        }
-        
-        
+            usuario="kevin";
+            password="kevin1234";
+        }   
 
         public Connection openConnection(){
             try {
@@ -19,7 +17,7 @@ public class FachadaDB {
             Class.forName("org.postgresql.Driver");
             
             } catch( ClassNotFoundException e ) {
-                System.out.println( "No se pudo cargar el driver." );
+                System.out.println( "No se pudo cargar el driver" );
             }
 
             try{
@@ -29,7 +27,7 @@ public class FachadaDB {
                      return conexion;
                   
              } catch( SQLException e ) {
-                System.out.println( "No se pudo abrir la bd." );
+                System.out.println( "No se pudo abrir la Base de Datos" );
                 return null;
              }
 
@@ -55,7 +53,5 @@ public class FachadaDB {
                 System.out.println( "No se pudo cerrar." );
             }
         }
-        
-      
         
 }

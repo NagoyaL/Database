@@ -3,19 +3,25 @@ package Logica;
 public class Usuario {
     private String identificacion;
     private String nombre;
+    private String apellido;
     private String direccion;
     private String telefono;
     private String email;
+    private String tipo_usuario;
     
-
+    public Usuario(String identificacion) {
+        this.identificacion = identificacion;
+    }
+    
     // Constructor
-    public Usuario(String identificacion, String nombre, String direccion, String telefono, String email) {
+    public Usuario(String identificacion, String nombre, String apellido, String direccion, String telefono, String email, String tipo_usuario) {
         this.identificacion = identificacion;
         this.nombre = nombre;
+        this.apellido = apellido;
         this.direccion = direccion;
         this.telefono = telefono;
         this.email = email;
-        
+        this.tipo_usuario = tipo_usuario;
     }
 
     // Getters y Setters
@@ -35,6 +41,14 @@ public class Usuario {
         this.nombre = nombre;
     }
 
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+    
     public String getDireccion() {
         return direccion;
     }
@@ -57,5 +71,13 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getTipoUsuario() {
+        return tipo_usuario;
+    }
+
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipo_usuario = tipoUsuario;
     }
 }

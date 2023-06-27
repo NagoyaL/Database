@@ -1,107 +1,131 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package accesoDatos;
 
-import java.sql.Connection;
+import Logica.Estudiante;
+import Logica.Profesor;
+import java.util.ArrayList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import Logica.Profesor;
+import javax.swing.JOptionPane;
 
-public class DaoProfesor {
-    private Connection conexion;
-
-    public DaoProfesor(Connection conexion) {
-        this.conexion = conexion;
+public class DaoProfesor implements IDAO{
+    Connection con = null;
+    ArrayList<Profesor> lista = new ArrayList<>();
+    Profesor profesorObj = null;
+    Estudiante estudianteObj = null;
+    PreparedStatement ps;
+    
+    public DaoProfesor() throws SQLException{
+        FachadaDB fachada = new FachadaDB();
+        con = fachada.getConnetion();
     }
-
-    public void insertarProfesor(Profesor profesor) throws SQLException {
-        String query = "INSERT INTO Profesor (identificacion, dependencia, titulo, areas_interes) VALUES (?, ?, ?, ?)";
-
-        try (PreparedStatement statement = conexion.prepareStatement(query)) {
-            statement.setString(1, profesor.getIdentificacion());
-            statement.setString(2, profesor.getDependencia());
-            statement.setString(3, profesor.getTitulo());
-            statement.setString(4, profesor.getAreasInteres());
-
-            statement.executeUpdate();
-        }
-    }
-
-    public void actualizarProfesor(Profesor profesor) throws SQLException {
-        String query = "UPDATE Profesor SET dependencia = ?, titulo = ?, areas_interes = ? WHERE identificacion = ?";
-
-        try (PreparedStatement statement = conexion.prepareStatement(query)) {
-            statement.setString(1, profesor.getDependencia());
-            statement.setString(2, profesor.getTitulo());
-            statement.setString(3, profesor.getAreasInteres());
-            statement.setString(4, profesor.getIdentificacion());
-
-            statement.executeUpdate();
-        }
-    }
-
-    public void eliminarProfesor(String identificacion) throws SQLException {
-        String query = "DELETE FROM Profesor WHERE identificacion = ?";
-
-        try (PreparedStatement statement = conexion.prepareStatement(query)) {
-            statement.setString(1, identificacion);
-            statement.executeUpdate();
-        }
-    }
-
-        public Profesor obtenerProfesor(String identificacion) throws SQLException {
-        String query = "SELECT * FROM Profesor WHERE identificacion = ?";
-        Profesor profesor = null;
-
-        try (PreparedStatement statement = conexion.prepareStatement(query)) {
-            statement.setString(1, identificacion);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    String nombre = resultSet.getString("nombre");
-                    String direccion = resultSet.getString("direccion");
-                    String telefono = resultSet.getString("telefono");
-                    String email = resultSet.getString("email");
-                    String tipoUsuario = resultSet.getString("tipo_usuario");
-                    String dependencia = resultSet.getString("dependencia");
-                    String titulo = resultSet.getString("titulo");
-                    String areasInteres = resultSet.getString("areas_interes");
-
-                    profesor = new Profesor(identificacion, nombre, direccion, telefono, email, dependencia, titulo, areasInteres);
-                }
+    
+    @Override
+    public ArrayList listar(String condicion) {
+        try{
+            String sql = "SELECT DISTINCT u.identificacion, u.nombre, u.apellido, u.direccion, u.telefono, u.email, u.tipo_usuario, e.carrera, e.universidad"
+                    + " FROM Estudiante AS e, Usuario AS u " + "WHERE e.identificacion = u.identificacion " +condicion;
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                estudianteObj = new Estudiante(
+                        rs.getString("identificacion"),
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("direccion"),
+                        rs.getString("telefono"),
+                        rs.getString("email"),
+                        rs.getString("tipo_usuario"),
+                        rs.getString("carrera"),
+                        rs.getString("universidad")
+                );
+                lista.add(estudianteObj);
             }
+        }catch (SQLException ex){
+            JOptionPane.showMessageDialog(null, ex.getMessage());  
         }
-
-        return profesor;
+        return lista;
     }
 
-    public List<Profesor> obtenerTodosLosProfesores() throws SQLException {
-        String query = "SELECT * FROM Profesor";
-        List<Profesor> profesores = new ArrayList<>();
+    @Override
+    public void insertar(Object obj) {
+        try {
+            estudianteObj = (Estudiante) obj;
+            String sql = "INSERT INTO Usuario (identificacion, nombre, apellido, direccion, telefono, email, tipo_usuario) "
+                    + " VALUES (?, ?, ?, ?, ?, ?)";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, estudianteObj.getIdentificacion());
+            ps.setString(2, estudianteObj.getNombre());
+            ps.setString(2, estudianteObj.getApellido());
+            ps.setString(3, estudianteObj.getDireccion());
+            ps.setString(4, estudianteObj.getTelefono());
+            ps.setString(5, estudianteObj.getEmail());
+            ps.setString(6, estudianteObj.getTipoUsuario());
+            ps.executeUpdate();
 
-        try (PreparedStatement statement = conexion.prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                String identificacion = resultSet.getString("identificacion");
-                String nombre = resultSet.getString("nombre");
-                String direccion = resultSet.getString("direccion");
-                String telefono = resultSet.getString("telefono");
-                String email = resultSet.getString("email");
-                String tipoUsuario = resultSet.getString("tipo_usuario");
-                String dependencia = resultSet.getString("dependencia");
-                String titulo = resultSet.getString("titulo");
-                String areasInteres = resultSet.getString("areas_interes");
-
-                Profesor profesor = new Profesor(identificacion, nombre, direccion, telefono, email,dependencia , titulo, areasInteres);
-                profesores.add(profesor);
-            }
+            String sql2 = "INSERT INTO Estudiante (identificacion, carrera, universidad) "
+                    + "VALUES (?, ?, ?)";
+            ps = con.prepareStatement(sql2);
+            ps.setString(1, estudianteObj.getIdentificacion());
+            ps.setString(2, estudianteObj.getCarrera());
+            ps.setString(3, estudianteObj.getUniversidad());
+            ps.executeUpdate();
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
         }
-
-        return profesores;
     }
-}
+
+    @Override
+    public void modificar(Object obj) {
+        try {
+            estudianteObj = (Estudiante) obj;
+            
+            String sql = "UPDATE Usuario SET nombre = ?,  apellido = ?, direccion = ?, telefono = ?, email = ?, tipo_usuario"
+                    + " WHERE identificacion = ?";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, estudianteObj.getNombre());
+            ps.setString(2, estudianteObj.getApellido());
+            ps.setString(3, estudianteObj.getDireccion());
+            ps.setString(4, estudianteObj.getTelefono());
+            ps.setString(5, estudianteObj.getEmail());
+            ps.setString(6, estudianteObj.getTipoUsuario());
+            String identificacionLong = estudianteObj.getIdentificacion();
+            String identificacionStr = String.valueOf(identificacionLong);
+            ps.setString(7, identificacionStr);
+            ps.executeUpdate();
+            
+            String sql2 = "UPDATE Estudiante SET carrera = ?,  universidad = ?"
+                    + " WHERE identificacion = ?";
+            ps = con.prepareStatement(sql2);
+            ps.setString(1, estudianteObj.getCarrera());
+            ps.setString(2, estudianteObj.getUniversidad());
+            ps.setString(3, identificacionStr);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+    }
+
+    @Override
+    public void eliminar(Object obj) {
+        try {
+            estudianteObj = (Estudiante) obj;
+
+            String sql = "DELETE FROM Estudiante WHERE identificacion = ?";
+            ps = con.prepareStatement(sql);
+            ps.setString(1,  estudianteObj.getIdentificacion());
+            ps.executeUpdate();
+            
+            String sql2 = "DELETE FROM Usuario WHERE identificacion = ?";
+            ps = con.prepareStatement(sql2);
+            ps.setString(1,  estudianteObj.getIdentificacion());
+            ps.executeUpdate();
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } 
+      }
+    
+    }
